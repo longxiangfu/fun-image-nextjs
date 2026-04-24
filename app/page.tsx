@@ -70,7 +70,7 @@ export default function Home() {
     rightEye: [362, 382, 381, 380, 374, 373, 390, 249, 263, 466, 388, 387, 386, 385, 384, 398],
     leftEyebrow: [70, 63, 105, 66, 107],
     rightEyebrow: [336, 296, 334, 293, 300],
-    nose: [1, 2, 98, 327, 326, 219, 440, 439, 94, 141, 61, 185, 40, 39, 37, 0, 267, 269, 270, 409, 291, 375, 321, 405, 314, 17, 84, 181, 91, 146, 61, 185],
+    nose: [1, 2, 98, 327, 326, 219, 440, 439, 94, 141, 40, 39, 37, 0, 267, 269, 270, 409, 291, 375, 321, 405, 314],
     noseTip: [1],
     mouthOuter: [61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291, 409, 270, 269, 267, 0, 37, 39, 40, 185],
     mouthInner: [78, 95, 88, 178, 87, 14, 317, 402, 318, 324, 308, 415, 310, 311, 312, 13, 82, 81, 80, 191],
@@ -471,8 +471,7 @@ export default function Home() {
         { name: 'rightEye', label: '右眼', indices: FACE_INDICES.rightEye, padding: 10 },
         { name: 'nose', label: '鼻子', indices: FACE_INDICES.nose, padding: 15 },
         { name: 'mouth', label: '嘴巴', indices: [...FACE_INDICES.mouthOuter, ...FACE_INDICES.mouthInner], padding: 12 },
-        { name: 'leftEar', label: '左耳', indices: FACE_INDICES.leftEar, padding: 15 },
-        { name: 'rightEar', label: '右耳', indices: FACE_INDICES.rightEar, padding: 15 },
+        // 耳朵不使用landmark检测（indices对应脸部轮廓而非耳朵），改用下方位置推算
         { name: 'forehead', label: '额头', indices: FACE_INDICES.forehead, padding: 20 },
         { name: 'chin', label: '下巴', indices: FACE_INDICES.chin, padding: 15 },
       ];
@@ -504,6 +503,63 @@ export default function Home() {
             bbox: { minX, maxX, minY, maxY },
             landmarks: pts, allFaceLandmarks: faceLm
           };
+        }
+      }
+
+      // 耳朵检测：基于landmark，但限制在脸部轮廓外侧
+      // 先计算脸部轮廓的左右边界
+      const faceOutlinePts = FACE_INDICES.faceOutline.map((i: number) => faceLm[i]).filter((p: any) => p);
+      if (faceOutlinePts.length > 0) {
+        const faceMinX = Math.min(...faceOutlinePts.map((p: any) => p.x * imgW));
+        const faceMaxX = Math.max(...faceOutlinePts.map((p: any) => p.x * imgW));
+        const faceMinY = Math.min(...faceOutlinePts.map((p: any) => p.y * imgH));
+        const faceMaxY = Math.max(...faceOutlinePts.map((p: any) => p.y * imgH));
+        const faceW = faceMaxX - faceMinX;
+
+        // 左耳：在脸部轮廓左侧边缘，高度在眼睛到鼻子之间
+        const leftEyePts2 = FACE_INDICES.leftEye.map((i: number) => faceLm[i]).filter((p: any) => p);
+        if (leftEyePts2.length > 0) {
+          const leCy = leftEyePts2.reduce((a: number, p: any) => a + p.y, 0) / leftEyePts2.length * imgH;
+          const earH = faceW * 0.12;
+          const earW = faceW * 0.06;
+          const leCx = faceMinX; // 左耳中心在脸部最左边缘
+          const leMinX = leCx - earW * 2;
+          const leMaxX = leCx + earW;
+          const leMinY = leCy - earH * 0.5;
+          const leMaxY = leCy + earH * 1.5;
+
+          if (clickX >= leMinX && clickX <= leMaxX && clickY >= leMinY && clickY <= leMaxY) {
+            console.log('✅ 匹配到左耳(轮廓推算)');
+            return {
+              type: 'faceRegion', region: 'leftEar', label: '左耳',
+              centerX: leCx, centerY: leCy,
+              bbox: { minX: leMinX, maxX: leMaxX, minY: leMinY, maxY: leMaxY },
+              allFaceLandmarks: faceLm
+            };
+          }
+        }
+
+        // 右耳：在脸部轮廓右侧边缘
+        const rightEyePts2 = FACE_INDICES.rightEye.map((i: number) => faceLm[i]).filter((p: any) => p);
+        if (rightEyePts2.length > 0) {
+          const reCy = rightEyePts2.reduce((a: number, p: any) => a + p.y, 0) / rightEyePts2.length * imgH;
+          const earH = faceW * 0.12;
+          const earW = faceW * 0.06;
+          const reCx = faceMaxX; // 右耳中心在脸部最右边缘
+          const reMinX = reCx - earW;
+          const reMaxX = reCx + earW * 2;
+          const reMinY = reCy - earH * 0.5;
+          const reMaxY = reCy + earH * 1.5;
+
+          if (clickX >= reMinX && clickX <= reMaxX && clickY >= reMinY && clickY <= reMaxY) {
+            console.log('✅ 匹配到右耳(轮廓推算)');
+            return {
+              type: 'faceRegion', region: 'rightEar', label: '右耳',
+              centerX: reCx, centerY: reCy,
+              bbox: { minX: reMinX, maxX: reMaxX, minY: reMinY, maxY: reMaxY },
+              allFaceLandmarks: faceLm
+            };
+          }
         }
       }
 

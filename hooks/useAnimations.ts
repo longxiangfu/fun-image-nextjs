@@ -169,17 +169,18 @@ export const useAnimations = () => {
       return;
     }
 
-    const bbox = region.bbox;
-    const w = bbox.maxX - bbox.minX;
-    const h = bbox.maxY - bbox.minY;
+    // 使用屏幕坐标计算相对于wrapper的位置
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const relX = screenX - wrapperRect.left;
+    const relY = screenY - wrapperRect.top;
 
-    console.log('眼睛动画参数:', { bbox, w, h, screenX, screenY });
+    console.log('眼睛动画参数:', { relX, relY, screenX, screenY });
 
     const eyelid = document.createElement('div');
     eyelid.className = 'region-anim';
     eyelid.style.cssText = `
-      left: ${bbox.minX}px; top: ${bbox.minY}px;
-      width: ${w}px; height: ${h}px;
+      left: ${relX - 18}px; top: ${relY - 10}px;
+      width: 36px; height: 20px;
       background: linear-gradient(180deg, rgba(255,200,200,0.9) 0%, rgba(255,220,220,0.95) 50%, rgba(255,200,200,0.9) 100%);
       transform-origin: center center;
       animation: eyelidBlink 1.2s ease-in-out;
@@ -215,15 +216,15 @@ export const useAnimations = () => {
     const wrapper = document.getElementById('imageWrapper');
     if (!wrapper) return;
 
-    const bbox = region.bbox;
-    const w = bbox.maxX - bbox.minX;
-    const h = bbox.maxY - bbox.minY;
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const relX = screenX - wrapperRect.left;
+    const relY = screenY - wrapperRect.top;
 
     const mouth = document.createElement('div');
     mouth.className = 'region-anim';
     mouth.style.cssText = `
-      left: ${bbox.minX - 5}px; top: ${bbox.minY - 5}px;
-      width: ${w + 10}px; height: ${h + 10}px;
+      left: ${relX - 20}px; top: ${relY - 8}px;
+      width: 40px; height: 16px;
       border-radius: 0 0 50% 50%;
       background: radial-gradient(ellipse at center, #8B0000 0%, #5C0000 60%, #3A0000 100%);
       transform-origin: center top;
@@ -274,17 +275,16 @@ export const useAnimations = () => {
     const wrapper = document.getElementById('imageWrapper');
     if (!wrapper) return;
 
-    const bbox = region.bbox;
-    const w = bbox.maxX - bbox.minX;
-    const h = bbox.maxY - bbox.minY;
-    const cx = bbox.minX + w / 2;
-    const cy = bbox.minY + h / 2;
+    // 使用屏幕坐标计算相对于wrapper的位置，避免border/padding偏移
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const relX = screenX - wrapperRect.left;
+    const relY = screenY - wrapperRect.top;
 
     const noseOverlay = document.createElement('div');
     noseOverlay.className = 'region-anim';
     noseOverlay.style.cssText = `
-      left: ${cx - w * 0.8}px; top: ${cy - h * 0.8}px;
-      width: ${w * 1.6}px; height: ${h * 1.6}px;
+      left: ${relX - 25}px; top: ${relY - 25}px;
+      width: 50px; height: 50px;
       border: 3px solid var(--neon-pink);
       border-radius: 50%;
       animation: noseWiggle 1.2s ease-in-out;
@@ -296,7 +296,7 @@ export const useAnimations = () => {
     const clownNose = document.createElement('div');
     clownNose.className = 'region-anim';
     clownNose.style.cssText = `
-      left: ${cx - 12}px; top: ${cy - 10}px;
+      left: ${relX - 12}px; top: ${relY - 10}px;
       width: 24px; height: 20px;
       background: radial-gradient(ellipse, #ff2222 0%, #cc0000 60%, #990000 100%);
       border-radius: 50%;
@@ -336,17 +336,15 @@ export const useAnimations = () => {
     const wrapper = document.getElementById('imageWrapper');
     if (!wrapper) return;
 
-    const bbox = region.bbox;
-    const w = bbox.maxX - bbox.minX;
-    const h = bbox.maxY - bbox.minY;
-    const cx = bbox.minX + w / 2;
-    const cy = bbox.minY + h / 2;
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const relX = screenX - wrapperRect.left;
+    const relY = screenY - wrapperRect.top;
 
     const earOverlay = document.createElement('div');
     earOverlay.className = 'region-anim';
     earOverlay.style.cssText = `
-      left: ${cx - w * 0.7}px; top: ${cy - h * 0.7}px;
-      width: ${w * 1.4}px; height: ${h * 1.4}px;
+      left: ${relX - 20}px; top: ${relY - 20}px;
+      width: 40px; height: 40px;
       border: 3px solid var(--neon-purple);
       border-radius: 50%;
       animation: earWiggle 1.2s ease-in-out;
@@ -358,7 +356,7 @@ export const useAnimations = () => {
     const earEmoji = document.createElement('div');
     earEmoji.className = 'region-anim';
     earEmoji.style.cssText = `
-      left: ${cx - 14}px; top: ${cy - 14}px;
+      left: ${relX - 14}px; top: ${relY - 14}px;
       width: 28px; height: 28px;
       font-size: 24px; line-height: 28px; text-align: center;
       animation: earEmojiPop 1.5s ease-in-out;
@@ -399,17 +397,15 @@ export const useAnimations = () => {
     const wrapper = document.getElementById('imageWrapper');
     if (!wrapper) return;
 
-    const bbox = region.bbox;
-    const w = bbox.maxX - bbox.minX;
-    const h = bbox.maxY - bbox.minY;
-    const cx = bbox.minX + w / 2;
-    const cy = bbox.minY + h / 2;
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const relX = screenX - wrapperRect.left;
+    const relY = screenY - wrapperRect.top;
 
     const browOverlay = document.createElement('div');
     browOverlay.className = 'region-anim';
     browOverlay.style.cssText = `
-      left: ${cx - w * 0.7}px; top: ${cy - h - 10}px;
-      width: ${w * 1.4}px; height: ${h * 2 + 20}px;
+      left: ${relX - 25}px; top: ${relY - 15}px;
+      width: 50px; height: 30px;
       border: 2px solid var(--neon-orange);
       border-radius: 8px;
       animation: browRaise 1.5s ease-in-out;
@@ -439,7 +435,7 @@ export const useAnimations = () => {
     wrapper.appendChild(browOverlay);
 
     for (let i = 0; i < 15; i++) {
-      createParticle(screenX + (Math.random() - 0.5) * w, screenY, {
+      createParticle(screenX + (Math.random() - 0.5) * 50, screenY, {
         vx: (Math.random() - 0.5) * 4, vy: -3 - Math.random() * 4,
         size: 2 + Math.random() * 4, gravity: -0.05, decay: 0.015,
         shape: Math.random() > 0.5 ? 'star' : 'circle', color: Math.random() > 0.5 ? '#ff6600' : '#ff2d95'
@@ -453,17 +449,15 @@ export const useAnimations = () => {
     const wrapper = document.getElementById('imageWrapper');
     if (!wrapper) return;
 
-    const bbox = region.bbox;
-    const w = bbox.maxX - bbox.minX;
-    const h = bbox.maxY - bbox.minY;
-    const cx = bbox.minX + w / 2;
-    const cy = bbox.minY + h / 2;
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const relX = screenX - wrapperRect.left;
+    const relY = screenY - wrapperRect.top;
 
     const glowOverlay = document.createElement('div');
     glowOverlay.className = 'region-anim';
     glowOverlay.style.cssText = `
-      left: ${cx - w * 0.6}px; top: ${cy - h * 0.6}px;
-      width: ${w * 1.2}px; height: ${h * 1.2}px;
+      left: ${relX - 25}px; top: ${relY - 25}px;
+      width: 50px; height: 50px;
       border: 2px solid var(--neon-yellow);
       border-radius: 50%;
       animation: foreheadGlow 1.5s ease-in-out;
@@ -475,7 +469,7 @@ export const useAnimations = () => {
     const bulb = document.createElement('div');
     bulb.className = 'region-anim';
     bulb.style.cssText = `
-      left: ${cx - 18}px; top: ${cy - 40}px;
+      left: ${relX - 18}px; top: ${relY - 40}px;
       width: 36px; height: 36px;
       font-size: 30px; line-height: 36px; text-align: center;
       animation: bulbPop 1.8s ease-in-out;
@@ -516,17 +510,15 @@ export const useAnimations = () => {
     const wrapper = document.getElementById('imageWrapper');
     if (!wrapper) return;
 
-    const bbox = region.bbox;
-    const w = bbox.maxX - bbox.minX;
-    const h = bbox.maxY - bbox.minY;
-    const cx = bbox.minX + w / 2;
-    const cy = bbox.minY + h / 2;
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const relX = screenX - wrapperRect.left;
+    const relY = screenY - wrapperRect.top;
 
     const chinOverlay = document.createElement('div');
     chinOverlay.className = 'region-anim';
     chinOverlay.style.cssText = `
-      left: ${cx - w * 0.7}px; top: ${cy - h * 0.5}px;
-      width: ${w * 1.4}px; height: ${h * 1.5}px;
+      left: ${relX - 20}px; top: ${relY - 10}px;
+      width: 40px; height: 30px;
       border: 3px solid var(--neon-cyan);
       border-radius: 0 0 50% 50%;
       animation: chinWobble 1.2s ease-in-out;
@@ -538,7 +530,7 @@ export const useAnimations = () => {
     const goatee = document.createElement('div');
     goatee.className = 'region-anim';
     goatee.style.cssText = `
-      left: ${cx - 10}px; top: ${cy}px;
+      left: ${relX - 10}px; top: ${relY}px;
       width: 20px; height: 25px;
       background: linear-gradient(180deg, #8B4513 0%, #654321 100%);
       border-radius: 0 0 50% 50%;
@@ -549,7 +541,7 @@ export const useAnimations = () => {
     wrapper.appendChild(goatee);
 
     for (let i = 0; i < 35; i++) {
-      createParticle(screenX + (Math.random() - 0.5) * w * 1.2, screenY + Math.random() * h, {
+      createParticle(screenX + (Math.random() - 0.5) * 50, screenY + Math.random() * 30, {
         vx: (Math.random() - 0.5) * 1, vy: 0.5 + Math.random() * 1.5,
         size: 1 + Math.random() * 2, decay: 0.015, color: Math.random() > 0.5 ? '#8B4513' : '#654321', shape: 'circle'
       });
