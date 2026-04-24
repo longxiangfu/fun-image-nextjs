@@ -463,14 +463,18 @@ export default function Home() {
     
     for (const faceLm of landmarks) {
       const regions = [
-        { name: 'leftEye', label: '左眼', indices: FACE_INDICES.leftEye, padding: 25 },
-        { name: 'rightEye', label: '右眼', indices: FACE_INDICES.rightEye, padding: 25 },
-        { name: 'mouth', label: '嘴巴', indices: [...FACE_INDICES.mouthOuter, ...FACE_INDICES.mouthInner], padding: 20 },
-        { name: 'nose', label: '鼻子', indices: FACE_INDICES.nose, padding: 25 },
-        { name: 'leftEyebrow', label: '左眉', indices: FACE_INDICES.leftEyebrow, padding: 20 },
-        { name: 'rightEyebrow', label: '右眉', indices: FACE_INDICES.rightEyebrow, padding: 20 },
-        { name: 'forehead', label: '额头', indices: FACE_INDICES.forehead, padding: 30 },
-        { name: 'chin', label: '下巴', indices: FACE_INDICES.chin, padding: 25 },
+        // 检测顺序：从小区域到大区域，优先匹配更精确的小区域
+        // 眉毛在眼睛之前检测，避免眼睛padding覆盖眉毛
+        { name: 'leftEyebrow', label: '左眉', indices: FACE_INDICES.leftEyebrow, padding: 12 },
+        { name: 'rightEyebrow', label: '右眉', indices: FACE_INDICES.rightEyebrow, padding: 12 },
+        { name: 'leftEye', label: '左眼', indices: FACE_INDICES.leftEye, padding: 10 },
+        { name: 'rightEye', label: '右眼', indices: FACE_INDICES.rightEye, padding: 10 },
+        { name: 'nose', label: '鼻子', indices: FACE_INDICES.nose, padding: 15 },
+        { name: 'mouth', label: '嘴巴', indices: [...FACE_INDICES.mouthOuter, ...FACE_INDICES.mouthInner], padding: 12 },
+        { name: 'leftEar', label: '左耳', indices: FACE_INDICES.leftEar, padding: 15 },
+        { name: 'rightEar', label: '右耳', indices: FACE_INDICES.rightEar, padding: 15 },
+        { name: 'forehead', label: '额头', indices: FACE_INDICES.forehead, padding: 20 },
+        { name: 'chin', label: '下巴', indices: FACE_INDICES.chin, padding: 15 },
       ];
 
       for (const region of regions) {
