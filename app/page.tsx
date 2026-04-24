@@ -236,7 +236,7 @@ export default function Home() {
       if (Array.isArray(data)) {
         return data.map((d: any) => ({
           label: d.label,
-          labelZh: LABEL_ZH[d.label] || d.label,
+          labelZh: (LABEL_ZH as Record<string, string>)[d.label] || d.label,
           score: d.score,
           box: {
             xmin: d.box.xmin, ymin: d.box.ymin,

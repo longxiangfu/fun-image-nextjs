@@ -579,7 +579,7 @@ export const useAnimations = () => {
     const leftCheekIdx = [234, 93, 132, 127, 162, 50, 280, 351];
     const rightCheekIdx = [454, 323, 361, 356, 389, 280, 50, 121];
 
-    [[leftCheekIdx, 'left'], [rightCheekIdx, 'right']].forEach(([indices, side]) => {
+    ([[leftCheekIdx, 'left'], [rightCheekIdx, 'right']] as [number[], string][]).forEach(([indices, side]) => {
       const pts = indices.map((i: number) => allLm[i]).filter((p: any) => p);
       if (pts.length > 0) {
         const cx = pts.reduce((a: number, p: any) => a + p.x, 0) / pts.length * imgW;
